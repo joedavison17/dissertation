@@ -70,9 +70,9 @@ def plot_trajectory(dest, left, right, samples, velocities):
     segments, array=velocities, cmap="inferno", norm=norm, linewidth=2, zorder=2
   )
   plt.gca().add_collection(lc)
-  # plt.gcf().colorbar(
-  #   lc, orientation="horizontal", label="Velocity (m/s)", pad=0.05, aspect=30
-  # )
+  plt.gcf().colorbar(
+    lc, orientation="horizontal", label="Velocity (m/s)", pad=0.05, aspect=30
+  )
   plt.gca().set_aspect('equal', adjustable='box')
   plt.axis('off')
   plt.savefig(dest, bbox_inches='tight')

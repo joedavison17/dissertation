@@ -1,6 +1,6 @@
 import argparse
 import os
-from enum import Enum, unique
+from enum import IntEnum, unique
 from plot import plot_corners, plot_path, plot_trajectory
 from track import Track
 from trajectory import Trajectory
@@ -10,7 +10,7 @@ from vehicle import Vehicle
 ## Argument parsing
 
 @unique
-class Method(Enum):
+class Method(IntEnum):
   CURVATURE = 0
   COMPROMISE = 1
   DIRECT = 2
@@ -18,33 +18,13 @@ class Method(Enum):
   COMPROMISE_ESTIMATED = 4
 
 parser = argparse.ArgumentParser(description='Racing line optimisation')
-parser.add_argument('--track',
-  nargs=1, type=str, metavar='PATH',
+parser.add_argument('track',
+  nargs=1, type=str,
   help='path to JSON containing track data'
 )
-parser.add_argument('--vehicle',
-  nargs=1, type=str, metavar='PATH',
+parser.add_argument('vehicle',
+  nargs=1, type=str,
   help='path to JSON containing vehicle data'
-)
-parser.add_argument('--plot-corners',
-  action='store_true', dest='plot_corners',
-  help='plot detected corners'
-)
-parser.add_argument('--plot-path',
-  action='store_true', dest='plot_path',
-  help='plot the generated path'
-)
-parser.add_argument('--plot-trajectory',
-  action='store_true', dest='plot_trajectory',
-  help='plot the generated path with velocity gradient'
-)
-parser.add_argument('--plot-all',
-  action='store_true', dest='plot_all',
-  help='plot all relevant graphs'
-)
-parser.add_argument('--plot-format',
-  type=str, dest='ext', default='png',
-  help='file format used to save plots'
 )
 methods = parser.add_argument_group('generation methods').add_mutually_exclusive_group(required=True)
 methods.add_argument('--curvature',
@@ -66,6 +46,26 @@ methods.add_argument('--sectors',
 methods.add_argument('--estimated',
   action='store_const', dest='method', const=Method.COMPROMISE_ESTIMATED,
   help='minimise a pre-computed length-curvature compromise'
+)
+parser.add_argument('--plot-corners',
+  action='store_true', dest='plot_corners',
+  help='plot detected corners'
+)
+parser.add_argument('--plot-path',
+  action='store_true', dest='plot_path',
+  help='plot the generated path'
+)
+parser.add_argument('--plot-trajectory',
+  action='store_true', dest='plot_trajectory',
+  help='plot the generated path with velocity gradient'
+)
+parser.add_argument('--plot-all',
+  action='store_true', dest='plot_all',
+  help='plot all relevant graphs'
+)
+parser.add_argument('--plot-format',
+  type=str, dest='ext', default='png',
+  help='file format used to save plots'
 )
 args = parser.parse_args()
 
@@ -117,8 +117,11 @@ print()
 ###############################################################################
 ## Plotting
 
-dir_name = os.path.dirname(__file__)
-plot_dir = os.path.join(dir_name, "../data/plots/" + track.name)
+method_dirs = ['curvature', 'compromise', 'laptime', 'sectors', 'estimated']
+plot_dir = os.path.join(
+  os.path.dirname(__file__), '..', 'data', 'plots', track.name,
+  method_dirs[args.method]
+)
 if not os.path.exists(plot_dir): os.makedirs(plot_dir)
 
 if args.plot_corners or args.plot_all:
