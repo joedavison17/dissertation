@@ -2,6 +2,8 @@
   
   BSc Computer Science 2019-20, University of Bath.
 
+  [Click here to view the submitted dissertation.](dissertation.pdf)
+
   ![whilton_compromise_trajectory](./data/plots/whilton/compromise/trajectory.png)
 
 ---
